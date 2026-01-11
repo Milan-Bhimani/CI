@@ -6,7 +6,6 @@ on:
       - Main
     paths:
       - "**/*.py"
-      - "**/*.js"
 
 jobs:
   flask-ci:
