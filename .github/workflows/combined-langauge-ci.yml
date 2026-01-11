@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - Main
+    paths:
+      - "**/*.py"
+      - "**/*.js"
 
 jobs:
   flask-ci:

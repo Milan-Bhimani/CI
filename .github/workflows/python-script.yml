@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - Main
+    paths:
+      - "**/*.py"
+      - "requirement.txt"
 
 jobs:
   Addition-ci:
