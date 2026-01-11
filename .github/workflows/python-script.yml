@@ -5,8 +5,7 @@ on:
     branches:
       - Main
     paths:
-      - "**/*.py"
-      - "requirement.txt"
+      - "addition.py"
 
 jobs:
   Addition-ci:
