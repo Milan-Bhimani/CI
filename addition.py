@@ -7,8 +7,8 @@ def add(a,b):
 # b = int(sys.argv[2])
 
 # dynamic input with matrix
-import os
-a = int(os.environ['A'])
-b = int(os.environ['B'])
+# import os
+# a = int(os.environ['A'])
+# b = int(os.environ['B'])
 
-print(add(a,b))
+# print(add(a,b))
