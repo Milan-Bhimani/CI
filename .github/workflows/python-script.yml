@@ -11,6 +11,11 @@ jobs:
   Addition-ci:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        A: [1,5,200]
+        B: [9,28,198]  
+
     steps:
 
       - name: Checkout Code
@@ -21,8 +26,14 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Run Addition with arguments
-        run: python3 addition.py 90 29
+      - name: Run Addition with matrix
+        run: python addition.py
+        env:
+          A: ${{matrix.A}}
+          B: ${{matrix.B}}
+
+      # - name: Run Addition with arguments
+      #   run: python3 addition.py 90 29
 
       # - name: Run Addition Script
       #   run : python3 addition.py
