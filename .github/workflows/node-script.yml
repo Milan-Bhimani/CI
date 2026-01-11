@@ -24,7 +24,7 @@ jobs:
       - name: load and run JavaScript using .env
         run: |
           set -a 
-          soruce .env
+          source .env
           set +a 
           node sum.js 
 
