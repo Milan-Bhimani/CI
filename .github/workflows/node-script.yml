@@ -21,5 +21,8 @@ jobs:
         with:
           node-version: 18
       
-      - name: Running JavaScript
-        run: node sum.js
+      - name: Running JavaScript with dynamic input
+        run : node sum.js 90 19
+
+      # - name: Running JavaScript
+      #   run: node sum.js

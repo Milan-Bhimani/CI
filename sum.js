@@ -1,5 +1,8 @@
-function sum(a,b){
-    return a + b;
+const a = parseInt(process.argv[2])
+const b = parseInt(process.argv[3])
+
+function sum(x,y){
+    return x + y;
 }
 
-console.log(sum(10,20));
+console.log(sum(a,b));
