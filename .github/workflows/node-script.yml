@@ -20,9 +20,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-      
-      - name: Running JavaScript with dynamic input
-        run : node sum.js 90 19
+
+      - name: load and run JavaScript using .env
+        run: |
+          set -a 
+          soruce .env
+          set +a 
+          node sum.js 
+
+      # - name: Running JavaScript with dynamic input
+      #   run : node sum.js 90 19
 
       # - name: Running JavaScript
       #   run: node sum.js
