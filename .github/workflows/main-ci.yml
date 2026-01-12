@@ -1,20 +1,150 @@
-name : Basic CI
+name: Main-Branch-CI
 
-on: 
+on:
   push:
-    branches:
-      - Main
+    branches: [Main]
+  pull_request:
+    branches: [Main]
 
 jobs:
-  run-code:
+  detect-changes:
+    name: Detect changed files
     runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.detect.outputs.all_changed_files }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
-      
-      - name: Run JavaScript
-        run: node hello.js 
-      
-      - name: Run Python
-        run: python3 hello.py 
+
+      - name: Detect file changes
+        id: detect
+        uses: tj-actions/changed-files@v44
+
+  python-ci:
+    name: Python Language CI
+    needs: detect-changes
+    if: contains(needs.detect-changes.outputs.files, '.py')
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Python dependencies if required
+        if: |
+          contains(needs.detect-changes.outputs.files, 'requirements.txt') ||
+          contains(needs.detect-changes.outputs.files, 'language.py')
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run changed Python scripts
+        run: |
+          echo "Changed files:"
+          echo "${{ needs.detect-changes.outputs.files }}"
+
+          for file in ${{ needs.detect-changes.outputs.files }}; do
+            if [[ "$file" == *.py && "$file" != test_* && "$file" != language.py ]]; then
+              echo "Running script: $file"
+              python "$file"
+            fi
+          done
+
+      - name: Flask/Django import sanity check
+        if: contains(needs.detect-changes.outputs.files, 'language.py')
+        run: |
+          python -c "from language import app; print('Flask app loaded:', app.name)"
+
+  python-test-ci:
+    name: Python Test CI
+    needs: detect-changes
+    if: contains(needs.detect-changes.outputs.files, 'test_')
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run Python tests
+        run: pytest
+
+  node-ci:
+    name: NodeJS Language CI
+    needs: detect-changes
+    if: contains(needs.detect-changes.outputs.files, '.js')
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ["18", "20"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Run changed JavaScript files
+        run: |
+          echo "Changed files:"
+          echo "${{ needs.detect-changes.outputs.files }}"
+
+          for file in ${{ needs.detect-changes.outputs.files }}; do
+            if [[ "$file" == *.js && "$file" != *.test.js ]]; then
+              echo "Running script: $file"
+              node "$file"
+            fi
+          done
+
+  node-test-ci:
+    name: NodeJS Test CI
+    needs: detect-changes
+    if: contains(needs.detect-changes.outputs.files, '.test.js')
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ["18", "20"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Run JavaScript tests
+        run: npm test
