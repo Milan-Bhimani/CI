@@ -4,16 +4,17 @@
 
 // for input of .env file
 
-const a = parseInt(process.env.A)
-const b = parseInt(process.env.B)
+// const a = parseInt(process.env.A)
+// const b = parseInt(process.env.B)
 
-if (isNaN(a) || isNaN(b)) {
-  throw new Error("Environment variables A and B must be numbers");
-}
+// if (isNaN(a) || isNaN(b)) {
+//   throw new Error("Environment variables A and B must be numbers");
+// }
 
 function sum(x,y){
     return x + y;
 }
 
-console.log(sum(a,b));
+// console.log(sum(a,b));
 
+module.exprots = sum;
