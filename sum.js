@@ -17,4 +17,4 @@ function sum(x,y){
 
 // console.log(sum(a,b));
 
-module.exprots = sum;
+module.exports = sum;
