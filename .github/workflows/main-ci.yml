@@ -21,9 +21,33 @@ jobs:
         id: detect
         uses: tj-actions/changed-files@v44
 
+  lint-python:
+      name: Style Check (Flake8)
+      needs: detect-changes
+      if : contains(needs.detect-changes.outputs.files, '.py')
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v4
+        
+        - name: Setup Python
+          uses: actions/setup-python@v5
+          with:
+            python-version: '3.x'
+        
+        - name: Install Flake8
+          run: |
+            python -m pip install --upgrade pip
+            pip install flake8
+        
+        - name: Run Flake8 Linting
+          run: |
+            flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+            flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
   python-ci:
     name: Python Language CI
-    needs: detect-changes
+    needs: [detect-changes, lint-python]
     if: contains(needs.detect-changes.outputs.files, '.py')
     runs-on: ubuntu-latest
 
@@ -67,7 +91,7 @@ jobs:
 
   python-test-ci:
     name: Python Test CI
-    needs: detect-changes
+    needs: [detect-changes, lint-python]
     if: contains(needs.detect-changes.outputs.files, 'test_')
     runs-on: ubuntu-latest
 
