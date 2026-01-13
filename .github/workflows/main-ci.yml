@@ -52,12 +52,12 @@ jobs:
         - name: Run Security Scan (Bandit)
           run: bandit -r . -lll
         
-        - name: Install Safety
-          run: pip install safety
+        - name: Install pip-audit
+          run: pip install pip-audit
         
-        - name: Check Dependencies (Safety)
-          run: safety scan -r requirement.txt
-
+        - name: Check Dependencies (pip-audit)
+          run: pip-audit -r requirements.txt
+          
   python-ci:
     name: Python Language CI
     needs: [detect-changes, lint-python]
