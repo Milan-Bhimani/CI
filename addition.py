@@ -12,5 +12,3 @@ def add(a,b):
 # b = int(os.environ['B'])
 
 # print(add(a,b))
-
-
