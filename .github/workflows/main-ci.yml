@@ -51,6 +51,12 @@ jobs:
         
         - name: Run Security Scan (Bandit)
           run: bandit -r . -lll
+        
+        - name: Install Safety
+          run: pip install safety
+        
+        - name: Check Dependencies (Safety)
+          run: safety check -r requirements.txt
 
   python-ci:
     name: Python Language CI
