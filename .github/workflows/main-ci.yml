@@ -56,7 +56,7 @@ jobs:
           run: pip install pip-audit
         
         - name: Check Dependencies (pip-audit)
-          run: pip-audit -r requirements.txt
+          run: pip-audit -r requirement.txt
           
   python-ci:
     name: Python Language CI
